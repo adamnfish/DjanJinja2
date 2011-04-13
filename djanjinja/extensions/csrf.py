@@ -19,6 +19,7 @@ tag, an exception will be raised.
 
 from jinja2 import nodes, Markup
 from jinja2.ext import Extension
+from django.core.exceptions import ImproperlyConfigured
 
 class CsrfExtension(Extension):
     """
