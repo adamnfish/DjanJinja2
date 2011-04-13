@@ -123,6 +123,7 @@ of bundle specifiers in an `'app_label.bundle_name'` format. For example:
         'djanjinja.cache',
         'djanjinja.humanize',
         'djanjinja.site',
+	'djanjinja.csrf',
     )
 
 You can also add bundles to the environment programmatically. This is useful
@@ -181,16 +182,17 @@ functions throughout all of your views.
 
 ### Caveats and Limitations
 
-Jinja2 does not yet support scoped filters and tests; as a result of this, the
-contents of bundles specified in `DJANJINJA_BUNDLES` will be loaded into the global environment. It is important
-to make sure that definitions in your bundle do not override those in another
-bundle. This is especially important with threaded web applications, as multiple
-bundles overriding one another could cause unpredictable behavior in the
-templates.
+Jinja2 does not yet support scoped filters and tests; as a result of
+this, the contents of bundles specified in `DJANJINJA_BUNDLES` will be
+loaded into the global environment. It is important to make sure that
+definitions in your bundle do not override those in another
+bundle. This is especially important with threaded web applications,
+as multiple bundles overriding one another could cause unpredictable
+behavior in the templates.
 
 ### Included Bundles
 
-DjanJinja provides three bundles already which either replace Django
+DjanJinja provides four bundles already which either replace Django
 counterparts or add some useful functionality to your Jinja2 templates:
     
 * `djanjinja.cache`: Loading this bundle will add a global `cache` object to the
@@ -207,6 +209,29 @@ counterparts or add some useful functionality to your Jinja2 templates:
   syntax, it can be used via `{{ url(name, *args, **kwargs) }}` instead.
   `setting` attempts to resolve a setting name into a value, returning an
   optional default instead (i.e. `setting('MEDIA_URL', '/media')`).
+
+* `djanijnja.csrf`: Djanjinja includes a csrf bundle that provides a
+  `print_csrf_token()` function. This can be used to add the csrf
+  token to your forms. For more information on csrf protection in
+  Djanjinja, see the documentation below.
+
+## CSRF protection
+
+With the v1.2 release, Django dramatically changed the way crsf
+protection was handled. Prior to this version, Django provided
+automatic csrf protection by automatically detecting and re-writing
+form tags in the response markup and inserting the csrf token. To
+prevent the csrf token from being leaked to third parties if the form
+submits to another site you are now required to manually add the csrf
+token to forms.
+
+Djanjinja's csrf bundle defines a global function to put the csrf
+token into a form. It should go directly after the opening form tag,
+for example: `<form action="{{ url }}" method="post">{{
+print_csrf_token() }}`. Bear in mind that you will need Django's csrf
+context processor added to the settings. See [Django's csrf
+documentation](http://docs.djangoproject.com/en/dev/ref/contrib/csrf/)
+for more information.
 
 ## Extensions
 

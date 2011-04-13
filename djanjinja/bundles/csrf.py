@@ -4,14 +4,15 @@
 
 import django
 from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
 from djanjinja.loader import Bundle
-
+from jinja2 import Markup
 
 bundle = Bundle()
 
 if django.VERSION >= (1, 2): # CSRF changed in Django v1.2+
     @bundle.ctxfunction
-    def csrf_token(context):
+    def print_csrf_token(context):
         token = context.get('csrf_token', None)
         if token:
             if token == 'NOTPROVIDED':
