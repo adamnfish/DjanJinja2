@@ -123,7 +123,7 @@ of bundle specifiers in an `'app_label.bundle_name'` format. For example:
         'djanjinja.cache',
         'djanjinja.humanize',
         'djanjinja.site',
-	'djanjinja.csrf',
+        'djanjinja.csrf',
     )
 
 You can also add bundles to the environment programmatically. This is useful
@@ -210,7 +210,7 @@ counterparts or add some useful functionality to your Jinja2 templates:
   `setting` attempts to resolve a setting name into a value, returning an
   optional default instead (i.e. `setting('MEDIA_URL', '/media')`).
 
-* `djanijnja.csrf`: Djanjinja includes a csrf bundle that provides a
+* `djanijnja.csrf`: DjanJinja includes a csrf bundle that provides a
   `print_csrf_token()` function. This can be used to add the csrf
   token to your forms. For more information on csrf protection in
   Djanjinja, see the documentation below.
@@ -225,7 +225,7 @@ prevent the csrf token from being leaked to third parties if the form
 submits to another site you are now required to manually add the csrf
 token to forms.
 
-Djanjinja's csrf bundle defines a global function to put the csrf
+DjanJinja's csrf bundle defines a global function to put the csrf
 token into a form. It should go directly after the opening form tag,
 for example: `<form action="{{ url }}" method="post">{{
 print_csrf_token() }}`. Bear in mind that you will need Django's csrf
