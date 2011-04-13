@@ -15,6 +15,7 @@ except NameError:
 
 import jinja2
 
+from django.template.base import TemplateDoesNotExist
 
 TEMPLATE_ENVIRONMENT = None
 
@@ -111,6 +112,52 @@ class Environment(jinja2.Environment):
     del adder
 
 
+class TemplateLoaders(object):
+    """
+    Calculate the template_source_loaders the first time they are
+    required and use the result thereafter.
+    """
+
+    template_source_loaders = None
+    
+    def fetch_template_source_loaders(self):
+        """
+        Reads Django's TEMPLATE_LOADERS setting and fetches each
+        template loader.
+        """
+        # grab Django's settings and the template loader loader
+        from django.conf import settings
+        from django.template.loader import find_template_loader
+            # fetch template source loaders
+        loaders = []
+        for loader_name in settings.TEMPLATE_LOADERS:
+            loader = find_template_loader(loader_name)
+            if loader is not None:
+                loaders.append(loader)
+        return tuple(loaders)
+
+    
+    def __call__(self, name):
+        """
+        Uses each template loader (as defined in settings.py) to
+        attempt to retrieve the template's source.
+        
+        The first time this method is run it fetches and internally
+        caches the template loaders defined in Django's settings.
+        """
+        if self.template_source_loaders is None:
+            self.template_source_loaders = self.fetch_template_source_loaders()
+
+        for loader in self.template_source_loaders:
+            try:
+                source, display_name = loader.load_template_source(name)
+                return source
+            except TemplateDoesNotExist:
+                pass
+        raise TemplateDoesNotExist(name)
+template_loaders = TemplateLoaders()
+
+
 def get_template_source(name):
     
     """
@@ -121,11 +168,9 @@ def get_template_source(name):
     expected by the ``jinja2.FunctionLoader`` loader class. It requires Django
     to be configured (i.e. the settings need to be loaded).
     """
-    
-    from django.template import loader
-    # `loader.find_template_source()` returns a 2-tuple of the source and a
-    # `LoaderOrigin` object. 
-    source = loader.find_template_source(name)[0]
+    # fetch the source using the template_source_loaders configured in
+    # Django's settings - handled by the template_loaders singleton
+    source = template_loaders(name)
     
     # `jinja2.FunctionLoader` expects a triple of the source of the template,
     # the name used to load it, and a 0-ary callable which will return whether
