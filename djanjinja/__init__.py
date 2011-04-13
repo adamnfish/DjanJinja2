@@ -18,7 +18,7 @@ __all__ = [
     'views',
 ]
 
-__version__ = '0.8'
+__version__ = '0.8.1'
 
 
 def get_environment():
