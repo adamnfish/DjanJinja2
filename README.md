@@ -123,7 +123,6 @@ of bundle specifiers in an `'app_label.bundle_name'` format. For example:
         'djanjinja.cache',
         'djanjinja.humanize',
         'djanjinja.site',
-        'djanjinja.csrf',
     )
 
 You can also add bundles to the environment programmatically. This is useful
@@ -210,29 +209,6 @@ counterparts or add some useful functionality to your Jinja2 templates:
   `setting` attempts to resolve a setting name into a value, returning an
   optional default instead (i.e. `setting('MEDIA_URL', '/media')`).
 
-* `djanijnja.csrf`: DjanJinja includes a csrf bundle that provides a
-  `print_csrf_token()` function. This can be used to add the csrf
-  token to your forms. For more information on csrf protection in
-  Djanjinja, see the documentation below.
-
-## CSRF protection
-
-With the v1.2 release, Django dramatically changed the way crsf
-protection was handled. Prior to this version, Django provided
-automatic csrf protection by automatically detecting and re-writing
-form tags in the response markup and inserting the csrf token. To
-prevent the csrf token from being leaked to third parties if the form
-submits to another site you are now required to manually add the csrf
-token to forms.
-
-DjanJinja's csrf bundle defines a global function to put the csrf
-token into a form. It should go directly after the opening form tag,
-for example: `<form action="{{ url }}" method="post">{{
-print_csrf_token() }}`. Bear in mind that you will need Django's csrf
-context processor added to the settings. See [Django's csrf
-documentation](http://docs.djangoproject.com/en/dev/ref/contrib/csrf/)
-for more information.
-
 ## Extensions
 
 Jinja2 supports the concept of *environment extensions*; these are non-trivial
@@ -260,6 +236,27 @@ documentation.
 
 To enable autoescaping, just add `JINJA_AUTOESCAPE = True` to your settings
 file. This will add the extension and set up the Jinja2 environment correctly.
+
+### CSRF protection
+
+With the v1.2 release, Django dramatically changed the way crsf
+protection was handled. Prior to this version, Django provided
+automatic csrf protection by automatically detecting and re-writing
+form tags in the response markup and inserting the csrf token. To
+prevent the csrf token from being leaked to third parties if the form
+submits to another site you are now required to manually add the csrf
+token to forms.
+
+DjanJinja provides an extension to mimic Django's `{% csrf_token %}`
+template tag. You should add it inside any form that POSTs to one of
+your views.
+
+    <form action="{{ url }}" method="post">{% csrf_token %}
+
+See [Django's csrf
+documentation](http://docs.djangoproject.com/en/dev/ref/contrib/csrf/)
+for more information on how to use the csrf_token tag - it works in
+exactly the same way in Djanjinja.
 
 ### Cache
 
