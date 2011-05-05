@@ -191,7 +191,7 @@ behavior in the templates.
 
 ### Included Bundles
 
-DjanJinja provides four bundles already which either replace Django
+DjanJinja provides three bundles already which either replace Django
 counterparts or add some useful functionality to your Jinja2 templates:
     
 * `djanjinja.cache`: Loading this bundle will add a global `cache` object to the
