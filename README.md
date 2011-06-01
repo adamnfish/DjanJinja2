@@ -279,9 +279,18 @@ seconds.
 
 ## 404 and 500 Handlers
 
-Your project’s URLconf must specify two variables—`handler404` and `handler500`—which give the name of a Django view to be processed in the event of a 404 "Not Found" and a 500 "Server Error" response respectively. These are set to a default which uses the Django templating system to render a response from templates called `404.html` and `500.html`. If you were to use the Jinja2 templating system instead, you will be able to define richer error pages, and your error pages will be able to inherit from and extend other Jinja2 master templates on the template path.
+Your project’s URLconf must specify two variables—`handler404` and
+`handler500`—which give the name of a Django view to be processed in
+the event of a 404 "Not Found" and a 500 "Server Error" response
+respectively. These are set to a default which uses the Django
+templating system to render a response from templates called
+`404.html` and `500.html`. If you were to use the Jinja2 templating
+system instead, you will be able to define richer error pages, and
+your error pages will be able to inherit from and extend other Jinja2
+master templates on the template path.
 
-It’s relatively simple to set Django up to do this. Simply override the handler variables like so from your `urls.py` file:
+It’s relatively simple to set Django up to do this. Simply override
+the handler variables like so from your `urls.py` file:
 
     handler404 = 'djanjinja.handlers.page_not_found'
     handler500 = 'djanjinja.handlers.server_error'
