@@ -107,9 +107,10 @@ def get_bundle(app_label, bundle_name):
     # provide a more detailed exception message.
     try:
         bundles = import_module('.bundles', package=app_name)
-    except ImportError:
+    except ImportError as msg:
         raise ImproperlyConfigured(
-            'App %r has no `bundles` module' % (app_name,))
+            'App %r has no `bundles` module or an error occured while importing it (error was `%s`)'\
+                % (app_name, msg))
     
     # Now load the specified bundle name. First we look to see if it is a top-
     # level attribute of the bundles module:
