@@ -1,9 +1,5 @@
 # DjanJinja
 
-DjanJinja: the sound you make when you've got peanut butter stuck to the roof of
-your mouth. Incidentally, it also happens to be the name of a new re-usable
-Django app. This one, in fact.
-
 DjanJinja exists to help you leverage the power of
 [Jinja2](http://jinja.pocoo.org/2/) templates in your Django projects. It's
 simple to get started.
@@ -19,21 +15,25 @@ simple to get started.
 3. (Optionally) add `'djanjinja.middleware.RequestContextMiddleware'` to your
    `MIDDLEWARE_CLASSES` list.
 
-It’s assumed that you have fairly recent versions of Jinja2 and Django
-installed. The author recommends the *most recent* stable versions of each,
-which should be installable via PyPI (i.e. a simple `easy_install` or `pip
-install`). A lot of people have their own ways of installing things, so the
-author hasn’t put any explicit requirements in the `setup.py` file. DjanJinja
-just expects to find `jinja2` and `django` on the import path.
+This fork of DjanJinja adds Django 1.3 compatibility so make sure you
+are using at least that version. It is assumed that you have fairly
+recent version of Jinja2 and installed, please raise an issue if you
+have problems with a specific version of Jinja2. Both Django and
+Jinja2 are installable via PyPI (i.e. a simple `easy_install` or `pip
+install`). A lot of people have their own ways of installing things,
+so the author hasn’t put any explicit requirements in the `setup.py`
+file. DjanJinja just expects to find `jinja2` and `django` on the
+import path.
 
 ### Using DjanJinja
 
-* Instead of using `django.shortcuts.render_to_response`, use one of the
+* Instead of using django's template shortcuts
+  (eg. `django.shortcuts.render_to_response`), use one of the
   Jinja2-based functions provided.
-* Instead of using the Django loaders to load templates, get them from the
-  Jinja2 environment created for you by DjanJinja.
-* Instead of using Django’s provided generic views, use those contained within
-  `djanjinja.generic` (at the moment the only one is `direct_to_template()`).
+
+* Instead of using Django’s provided generic views, use those
+  contained within `djanjinja.generic` (at the moment the only one is
+  `direct_to_template()`).
 
 ## Shortcut Functions
 
@@ -189,25 +189,36 @@ bundle. This is especially important with threaded web applications,
 as multiple bundles overriding one another could cause unpredictable
 behavior in the templates.
 
+If you need to make functionality available to specific templates bear
+in mind that [Jinja2 natively includes support for
+macros](http://jinja.pocoo.org/docs/templates/#macros). DjanJinja
+bundles are great for adding behaviours to your entire project and
+Jinja2 macros are a better fit for small pieces of specific
+functionality.
+
 ### Included Bundles
 
-DjanJinja provides three bundles already which either replace Django
-counterparts or add some useful functionality to your Jinja2 templates:
+DjanJinja provides three default bundles which either mimic Django
+counterparts or add some useful functionality to your Jinja2
+templates. This makes it even easier to convert from Django's
+templates to Jinja2:
     
 * `djanjinja.cache`: Loading this bundle will add a global `cache` object to the
   environment; this is the Django cache, and allows you to carry out caching
   operations from within your templates (such as `cache.get(key)`, et cetera).
 
-* `djanjinja.humanize`: This will add all of the filters contained within the
-  `django.contrib.humanize` app; consult the official Django docs for more
-  information on the filters provided.
+* `djanjinja.humanize`: This will add all of the filters contained
+  within the `django.contrib.humanize` app; consult [the official Django
+  docs](https://docs.djangoproject.com/en/dev/ref/contrib/humanize/)
+  for more information on the filters provided.
 
-* `djanjinja.site`: This will add two functions to the global environment:
-  `url`, and `setting`. The former acts like Django’s template tag, by reversing
-  URLconf names and views into URLs, but because Jinja2 supports a richer
-  syntax, it can be used via `{{ url(name, *args, **kwargs) }}` instead.
-  `setting` attempts to resolve a setting name into a value, returning an
-  optional default instead (i.e. `setting('MEDIA_URL', '/media')`).
+* `djanjinja.site`: This will add two functions to the global
+  environment: `url`, and `setting`. The former acts like Django’s
+  template tag, by reversing URLconf names and views into
+  URLs. Because Jinja2 supports a richer syntax, it can be used via
+  `{{ url(name, *args, **kwargs) }}` instead. The `setting` function
+  attempts to resolve a setting name into a value, optionally
+  returning a default instead (i.e. `setting('MEDIA_URL', '/media')`).
 
 ## Extensions
 
