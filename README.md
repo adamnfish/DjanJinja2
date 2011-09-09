@@ -343,16 +343,22 @@ Django syntax), but it works for the problem domain it was designed for.
 
 ## Middleware
 
-One important thing to note from before is that each time a `RequestContext`
-instance is constructed, it is necessary to explicitly pass the request. In
-object-oriented programming, and Python expecially, when we have functions to
-which we must always pass an object of a certain type, it makes sense to make
-that function a *method* of the type. When that function is not, in fact, a
-function, but a constructor, this seems more difficult. However, thanks to a
-feature of Python known as metaprogramming, we can do this very easily. Because
-it's not exactly obvious how to do so, DjanJinja includes a special piece of
-middleware which can help make your code a lot shorter yet *still* retain all
-the functionality and flexibility of the previous two examples.
+Djanjinja contains two middleware optional middleware classes for your
+convenience.
+
+### RequestContextMiddleware
+
+Each time a `RequestContext` instance is constructed, it is necessary
+to explicitly pass the request. In object-oriented programming, and
+Python expecially, when we have functions to which we must always pass
+an object of a certain type, it makes sense to make that function a
+*method* of the type. When that function is not, in fact, a function,
+but a constructor, this seems more difficult. However, thanks to a
+feature of Python known as metaprogramming, we can do this very
+easily. Because it's not exactly obvious how to do so, DjanJinja
+includes a special piece of middleware which can help make your code a
+lot shorter yet *still* retain all the functionality and flexibility
+of the examples given above, in the RequestContext section.
 
 To use this middleware, simply add
 `'djanjinja.middleware.RequestContextMiddleware'` to your `MIDDLEWARE_CLASSES`
@@ -370,6 +376,64 @@ Python class, which may itself be subclassed and modified later on. When
 constructed, it behaves almost exactly the same as the usual `RequestContext`,
 only it uses the request object to which it has been attached, so you don't have
 to pass it in to the constructor every time.
+
+### MessagesMiddleware
+
+In the same way, Django's messaging framework requires you to add the
+request as the first parameter to all its calls. Djanjinja's
+MessagesMiddleware adds these methods to the request object to greatly
+simplify their use.
+
+To use this middleware, add
+`'djanjinja.middleware.MessagesMiddleware'` to the
+`MIDDLEWARE_CLASSES` setting for your project.
+
+You can then use the new shortcuts in your views as follows:
+
+    def myview(request):
+        # add a debug-level message
+        request.debug('My message here')
+        # add an info-level message
+        request.info('My message here')
+        # add a success-level message
+        request.success('My message here')
+        # add a warning-level message
+        # note that you can pass additional args
+        request.warning('My message here', fail_silently=True)
+        # add an error message
+        request.error('My message here')
+        
+        # add a custom message
+        request.add_message(MY_CUSTOM_LEVEL, 'My message')
+
+Each of these methods correspond exactly to those described in the
+Django documentation for the [messaging
+framework](http://docs.djangoproject.com/en/dev/ref/contrib/messages/)
+except that they are called from the request object and thus without
+the request parameter.
+
+Please note that for messaging to work you must also include any
+dependancies required by Django's messaging framework in your
+middleware settings. These dependancies are described in detail in the
+[messaging
+documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/).
+
+## Context Processors
+
+Djanjinja also provides a context processor.
+
+### Messages
+
+This context processor is included to make using Django's messaging
+framework in your Jnija2 templates simpler.
+
+If you include `'djanjinja.context.messages'` in your application's
+`TEMPLATE_CONTEXT_PROCESSORS` setting, a `messages` variable will be
+exposed to all your templates that contains any messages associated
+woth the request object. This works in exactly the same way as
+Django's own messaging context processor. Consult Django's [messaging
+documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/)
+for more information on using this context processor.
 
 ## Template Loading
 

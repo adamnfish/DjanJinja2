@@ -3,10 +3,18 @@
 """
 djanjinja.middleware - Helpful middleware for using Jinja2 from Django.
 
-This module contains middleware which helps you use Jinja2 from within your
-views. At the moment it only contains ``RequestContextMiddleware``, but may
-expand in future.
+This module contains middleware which helps you use Jinja2 from within
+your views. ``RequestContextMiddleware`` adds a Context property to
+all request objects that allows you to render templates with a request
+context more elegantly. It also contains ``MessagesMiddleware``, which
+adds methods to the request object that correspond to the methods made
+available by Django's messaging framework.
+
+
 """
+from functools import partial
+
+from django.contrib import messages as django_messages
 
 from djanjinja.views import RequestContext
 
@@ -32,3 +40,23 @@ class RequestContextMiddleware(object):
         """
         
         request.Context = RequestContext.with_request(request)
+
+class MessagesMiddleware(object):
+    """
+    Adds shortcut methods to the request for Django's messages
+    framework.
+    """
+    
+    def process_request(self, request):
+        """
+        Mutates the request object to add messages methods
+        """
+
+        request.debug = partial(django_messages.debug, request)
+        request.info = partial(django_messages.info, request)
+        request.success = partial(django_messages.success, request)
+        request.warning = partial(django_messages.warning, request)
+        request.error = partial(django_messages.error, request)
+        request.add_message = partial(django_messages.add_message, request)
+        request.get_messages = partial(django_messages.get_messages, request)
+
