@@ -420,7 +420,8 @@ documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/).
 
 ## Context Processors
 
-Djanjinja also provides a context processor.
+Djanjinja also provides a context processor for handling Django#s
+messages.
 
 ### Messages
 
@@ -430,10 +431,30 @@ framework in your Jnija2 templates simpler.
 If you include `'djanjinja.context.messages'` in your application's
 `TEMPLATE_CONTEXT_PROCESSORS` setting, a `messages` variable will be
 exposed to all your templates that contains any messages associated
-woth the request object. This works in exactly the same way as
-Django's own messaging context processor. Consult Django's [messaging
+woth the request object. This works in the same way as Django's own
+messaging context processor. Consult Django's [messaging
 documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/)
 for more information on using this context processor.
+
+However, Djanjinja's messages context processor also provides an
+`as_html` method. This is a property on the messages template variable
+itself. To use it in your templates, do the following:
+
+    {{ messages.as_html() }}
+
+By default, this fetches the messages and prints them out as an
+unordered list, including CSS classes that correspond to the message
+level. This output is identical to the sample output given in the
+[messages
+documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/#displaying-messages). It
+does this by rendering the `messages/messages.html` template with the
+messages passed as the template's context. This template is found
+within Djaninja - to override it you can include a template in your
+application's template directory at the same location (`<template
+dir>/messages/messgaes.html`). If you would rather customise the
+rendering of the messages yourself then you can access the messages
+variable directly without ever touching the as_html method, or use
+Django's own messages context processor.
 
 ## Template Loading
 
