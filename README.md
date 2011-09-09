@@ -418,13 +418,22 @@ middleware settings. These dependancies are described in detail in the
 [messaging
 documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/).
 
-Using Djanjinja means your application is completely compatible with
-Django's own context processors. This means you can also use Django's
-own messaging context processor to include message information in your
-templates. Just add
-`'django.contrib.messages.context_processors.messages'` to your
-application's `TEMPLATE_CONTEXT_PROCESSORS` settings. This will expose
-a `messages` variable to your templates.
+## Context Processors
+
+Djanjinja also provides a context processor.
+
+### Messages
+
+This context processor is included to make using Django's messaging
+framework in your Jnija2 templates simpler.
+
+If you include `'djanjinja.context.messages'` in your application's
+`TEMPLATE_CONTEXT_PROCESSORS` setting, a `messages` variable will be
+exposed to all your templates that contains any messages associated
+woth the request object. This works in exactly the same way as
+Django's own messaging context processor. Consult Django's [messaging
+documentation](https://docs.djangoproject.com/en/dev/ref/contrib/messages/)
+for more information on using this context processor.
 
 ## Template Loading
 
